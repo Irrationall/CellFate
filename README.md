@@ -22,7 +22,7 @@
 
 | Package | Version | Note |
 | --- | --- | --- |
-| [minepy](https://github.com/minepy/minepy) | 1.2.6 | |
+| [minepy](https://github.com/minepy/minepy) | 1.2.6 | [Documentation](https://minepy.readthedocs.io/en/latest/) |
 | numpy | < 2.0 | minepy does not support NumPy 2.0 out of the box ([workaround](#using-numpy-20)) |
 
 ---
