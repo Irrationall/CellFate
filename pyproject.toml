@@ -1,35 +1,40 @@
 [build-system]
-requires = ["setuptools>=61.0", "wheel","numpy>=1.18, <2.0"]
+requires = ["setuptools==79.0.1", "wheel==0.48.0", "Cython==3.2.4", "numpy==2.2.6"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "CellOrigin"
-version = "0.99"
-description = "A package for predicting cell fate"
+name = "CellFate"
+version = "0.1.2"
+description = "A package for predicting cell fate with exact-path optimizations"
 authors = [
     { name = "Junseo Seo", email = "juneseo99@kaist.ac.kr" },
     { name = "Hwisoo Choi", email = "chs1181@gmail.com" }
 ]
-readme = "README.md"
-license = { file = "LICENSE" }
 keywords = ["singlecell", "cell-fate", "Relative dimension", "MIC"]
-requires-python = ">=3.6, <3.13"
-
+readme = "README.md"
+requires-python = ">=3.10,<3.13"
+license = "GPL-3.0-only"
+license-files = ["LICENSE", "src/cellfate/_native/NOTICE.txt"]
 dependencies = [
-    "numpy>=1.18, <2.0",
-    "minepy",
-    "scanpy>=1.8",
-    "scikit-learn<1.5"
+  "numpy>=1.24.1", "scipy==1.15.3",
+  "networkx==3.4.2", "anndata==0.11.4", "scanpy==1.11.5",
+  "pandas==2.3.3", "numba==0.65.1", "llvmlite==0.47.0",
+  "joblib==1.5.3", "scikit-learn==1.4.2", "statsmodels==0.14.6",
+  "tqdm==4.67.3", "matplotlib==3.10.9", "seaborn==0.13.2"
 ]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+namespaces = false
 
 [project.optional-dependencies]
 test = ["pytest", "pytest-cov"]
 
 [project.urls]
-homepage = "https://github.com/Irrationall/CellOrigin"
-repository = "https://github.com/Irrationall/CellOrigin"
-issue-tracker = "https://github.com/Irrationall/CellOrigin/issues"
+homepage = "https://github.com/Irrationall/CellFate"
+repository = "https://github.com/Irrationall/CellFate"
+issue-tracker = "https://github.com/Irrationall/CellFate/issues"
 
-[tool.setuptools]
-package-dir = {"" = "src"}
+[tool.setuptools.package-data]
+"cellfate._native" = ["*.c", "*.pyx", "*.pxd", "NOTICE.txt", "libmine/*.c", "libmine/*.h", "libmine/*.cpp"]
 

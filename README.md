@@ -3,7 +3,7 @@
 **Predicting cell fate with single-cell data**
 
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](LICENSE)
-![Python](https://img.shields.io/badge/python-3.6%E2%80%933.12-blue)
+![Python](https://img.shields.io/badge/python-3.10%E2%80%933.12-blue)
 
 ---
 
@@ -22,8 +22,10 @@
 
 | Package | Version | Note |
 | --- | --- | --- |
-| [minepy](https://github.com/minepy/minepy) | 1.2.6 | [Documentation](https://minepy.readthedocs.io/en/latest/) |
-| numpy | < 2.0 | minepy does not support NumPy 2.0 out of the box ([workaround](#using-numpy-20)) |
+| [minepy](https://github.com/minepy/minepy) | 1.2.6 (modified) | Included; no separate installation needed |
+| [NumPy](https://numpy.org/) | >=1.24.1 | Supports NumPy 1.x and 2.x ([details](#using-numpy-20)) |
+
+Building from source requires Linux and GCC with OpenMP support (libgomp). On Python 3.12, NumPy >=1.26 is required.
 
 ---
 
@@ -33,85 +35,37 @@
 git clone https://github.com/Irrationall/CellFate.git
 cd CellFate
 
-# Install in editable mode
-pip install -e .
+conda create -n cellfate "python>=3.10,<3.13" pip
+conda activate cellfate
+
+pip install .
 ```
+
+The included minepy and RD extensions are compiled automatically during installation.
 
 ---
 
 ## Tutorial
 
-Example notebooks are available in the [`tutorial/`](tutorial/) directory.
+See the [`tutorial/`](tutorial/) directory.
 
 ---
 
 ## Using NumPy 2.0
 
-**Scanpy 1.10.3** works with **NumPy 2.0** by default, but **minepy** does not.
-To use them together, recompile minepy in an environment where NumPy 2.0 is installed.
+CellFate supports NumPy 1.x and 2.x. The included modified minepy is compiled automatically during installation, so no separate minepy installation or manual recompilation is needed. pip selects a NumPy version compatible with Scanpy, SciPy and Numba.
 
 <details>
 <summary><b>Show step-by-step guide</b></summary>
 
-&nbsp;
-
-**Step 1.** Create a virtual environment (conda is used here).
+From the CellFate source directory:
 
 ```bash
-conda create -n newminepy python=3.10
-conda activate newminepy
-```
+conda create -n cellfate-np2 "python>=3.10,<3.13" pip
+conda activate cellfate-np2
 
-**Step 2.** Install Scanpy and clone the minepy repository.
-Recent versions of Scanpy install NumPy ≥ 2.0 automatically.
-
-```bash
-pip install scanpy
-git clone https://github.com/minepy/minepy.git
-```
-
-**Step 3.** Generate the C source and compile it.
-
-```bash
-cd minepy
-pip install cython
-bash compile_pyx.sh   # creates minepy/mine.c
-```
-
-```bash
-gcc -shared -pthread -fPIC -fwrapv -O2 \
-    -I"$CONDA_PREFIX/include/python3.10" \
-    -I"$(python -c 'import numpy; print(numpy.get_include())')" \
-    -o minepy/mine.new.so minepy/mine.c
-
-pip install .
-```
-
-> [!NOTE]
-> The include paths above are resolved automatically from the active conda environment.
-> If you are not using conda, replace them with your own Python and NumPy include directories.
-
-**Step 4.** Check that minepy works (run this outside the `minepy` folder).
-
-```python
-from minepy import MINE
-import numpy as np
-
-print(f"NumPy version: {np.__version__}")
-
-x = [1, 2, 3, 4, 5]
-y = [5, 4, 3, 2, 1]
-
-mine = MINE()
-mine.compute_score(x, y)
-print([mine.mic(), mine.mas(), mine.mev(), mine.mcn(), mine.tic()])
-```
-
-Expected output:
-
-```text
-NumPy version: 2.0.2
-[0.9709505944546685, 0.0, 0.9709505944546685, 2.0, 0.9709505944546685]
+pip install "numpy>=2" .
+python -c "import numpy; import cellfate as cf; print(numpy.__version__); print(cf.backend_info())"
 ```
 
 </details>
@@ -148,3 +102,4 @@ TBD
 ## License
 
 This project is licensed under the [GNU General Public License v3.0](LICENSE).
+
