@@ -773,7 +773,7 @@ def run_single_source(graph, times, source_node, use_spectral_gap=True):
     (laplacian, spectral_gap) = construct_laplacian(graph, use_spectral_gap=use_spectral_gap)
     initial_measure = get_initial_measure(graph, [source_node])
     node_trajectories = compute_node_trajectories(laplacian, initial_measure, times)
-    (relative_dimensions, peak_times, peak_amplitudes, diffusion_coefficient) = extract_relative_dimensions_vectorized(times, node_trajectories, initial_measure[:, None], spectral_gap)
+    (relative_dimensions, peak_times, peak_amplitudes, diffusion_coefficient) = extract_relative_dimensions_vectorized(np.asarray(times), node_trajectories[:, :, None], initial_measure[:, None], spectral_gap)
     results = {'relative_dimensions': relative_dimensions.flatten(), 'peak_amplitudes': peak_amplitudes.flatten(), 'peak_times': peak_times.flatten(), 'diffusion_coefficient': diffusion_coefficient, 'times': times, 'node_trajectories': node_trajectories}
     return results
 
